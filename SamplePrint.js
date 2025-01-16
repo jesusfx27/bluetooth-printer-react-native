@@ -36,7 +36,7 @@ const SamplePrint = () => {
           title="Print QRCode"
         />
       </View>
-
+{/* <---------imprime salto de linea--------------------> */}
       <View style={styles.btn}>
         <Button
           onPress={async () => {
@@ -54,7 +54,7 @@ const SamplePrint = () => {
           title="Print UnderLine"
         />
       </View>
-
+{/* <---------fin imprime salto de linea--------------------> */}
       <View style={styles.btn}>
         <Button
           title="Print Struk Belanja"

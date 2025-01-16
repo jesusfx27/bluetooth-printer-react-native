@@ -25,6 +25,8 @@ const App = () => {
   const [name, setName] = useState('');
   const [boundAddress, setBoundAddress] = useState('');
 
+
+  //<--------------------useefect------------------>
   useEffect(() => {
     BluetoothManager.isBluetoothEnabled().then(
       enabled => {
@@ -51,6 +53,7 @@ const App = () => {
     } else if (Platform.OS === 'android') {
       DeviceEventEmitter.addListener(BluetoothManager.EVENT_DEVICE_ALREADY_PAIRED, rsp => {
         deviceAlreadPaired(rsp);
+        
       });
       DeviceEventEmitter.addListener(BluetoothManager.EVENT_DEVICE_FOUND, rsp => {
         deviceFoundEvent(rsp);
@@ -67,6 +70,10 @@ const App = () => {
       scan();
     }
   }, [boundAddress, deviceAlreadPaired, deviceFoundEvent, pairedDevices, scan]);
+  
+  
+
+  //<--------------------final del useefect------------------>
 
   const deviceAlreadPaired = useCallback(
     rsp => {
@@ -147,7 +154,7 @@ const App = () => {
       },
     );
   };
-
+//<------------escaneamos dispositivos--------------->
   const scanDevices = useCallback(() => {
     setLoading(true);
     BluetoothManager.scanDevices().then(
@@ -172,6 +179,8 @@ const App = () => {
       },
     );
   }, [foundDs]);
+
+  //<------------fin escaneamos dispositivos--------------->
 
   const scan = useCallback(() => {
     try {
@@ -206,6 +215,7 @@ const App = () => {
     }
   }, [scanDevices]);
   
+  //<------------solicitamos premisos para escanear dispositivos------------->
   const scanBluetoothDevice = async () => {
     setLoading(true);
     try {
@@ -225,29 +235,31 @@ const App = () => {
       setLoading(false);
     }
   };
+  //<------------fin solicitud permisos para escanear dispositivos------------->
 
   return (
       <ScrollView style={styles.container}>
         <View style={styles.bluetoothStatusContainer}>
           <Text style={styles.bluetoothStatus(bleOpend ? '#47BF34' : '#A8A9AA')}>
-            Bluetooth {bleOpend ? 'Aktif' : 'Non Aktif'}
+            Bluetooth {bleOpend ? 'Activo' : 'Desactivado'}
           </Text>
         </View>
-        {!bleOpend && <Text style={styles.bluetoothInfo}>Mohon aktifkan bluetooth anda</Text>}
-        <Text style={styles.sectionTitle}>Printer yang terhubung ke aplikasi:</Text>
+        {!bleOpend && <Text style={styles.bluetoothInfo}>Activa bluetooht</Text>}
+        <Text style={styles.sectionTitle}>Impresora Activa</Text>
         {boundAddress.length > 0 && (
           <ItemList
             label={name}
             value={boundAddress}
             onPress={() => unPair(boundAddress)}
-            actionText="Putus"
+            actionText="Desconectar"
             color="#E9493F"
           />
         )}
         {boundAddress.length < 1 && (
-          <Text style={styles.printerInfo}>Belum ada printer yang terhubung</Text>
+          <Text style={styles.printerInfo}>todavia no hay impresora conectada</Text>
         )}
-        <Text style={styles.sectionTitle}>Bluetooth yang terhubung ke HP ini:</Text>
+        {/* aqui se muestra la lista de impresoras encontradas */}
+        <Text style={styles.sectionTitle}>Dispositivos Encontrados:</Text>
         {loading ? <ActivityIndicator animating={true} /> : null}
         <View style={styles.containerList}>
           {pairedDevices.map((item, index) => {
@@ -258,11 +270,13 @@ const App = () => {
                 label={item.name}
                 value={item.address}
                 connected={item.address === boundAddress}
-                actionText="Hubungkan"
+                actionText="Conectar"
                 color="#00BCD4"
               />
+              
             );
           })}
+          {/* aqui se muestra la lista de impresoras encontradas final */}
         </View>
         <SamplePrint />
         <Button
