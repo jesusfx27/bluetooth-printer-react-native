@@ -17,6 +17,7 @@ import ItemList from './ItemList';
 import SamplePrint from './SamplePrint';
 import { styles } from './styles';
 import { DevSettings } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const App = () => {
   const [pairedDevices, setPairedDevices] = useState([]);
@@ -27,6 +28,14 @@ const App = () => {
   const [boundAddress, setBoundAddress] = useState('');
   const [permiso, setPermiso] = useState(false)
   const [conectado, setConectado] = useState(false)
+
+  useEffect(()=>{
+    scanBluetoothDevice()
+    console.log('escaneando dispositivos');
+},[])
+
+
+
 
 
   //<--------------------useefect------------------>
@@ -56,8 +65,9 @@ const App = () => {
     } else if (Platform.OS === 'android') {
       DeviceEventEmitter.addListener(BluetoothManager.EVENT_DEVICE_ALREADY_PAIRED, rsp => {
         deviceAlreadPaired(rsp);
-        console.log(rsp);
-        
+        const dispositivo = JSON.parse(rsp.devices)
+        connect(dispositivo[0]);
+        console.log('conectado a impresora');
         
       });
       DeviceEventEmitter.addListener(BluetoothManager.EVENT_DEVICE_FOUND, rsp => {
@@ -74,7 +84,7 @@ const App = () => {
     if (pairedDevices.length < 1) {
       scan();
     }
-  }, [boundAddress, deviceAlreadPaired, deviceFoundEvent, pairedDevices, scan]);
+  }, [boundAddress, deviceAlreadPaired, deviceFoundEvent, pairedDevices, scan, permiso]);
   
   
 
@@ -243,6 +253,7 @@ const App = () => {
         setLoading(false);
         setPermiso(true)
         
+        
       } else {
         setLoading(false);
       }
@@ -252,39 +263,9 @@ const App = () => {
   };
   //<------------fin solicitud permisos para escanear dispositivos------------->
 
-  useEffect(()=>{
+  
 
-    const inicio = async ()=>{
-      if (pairedDevices.length == 0){
-        await scanBluetoothDevice()
-        console.log('escaneando dispositivos');
-        
-      }
-      else{
-        //connect(pairedDevices[0])
-        console.log('conectado a ',pairedDevices[0], 'linea 264');
-        
-      }
-    
-      
-    }
-    
-    inicio()
-  },[])
 
-  const conectarImpresora = ()=>{
-    setInterval(()=>{
-      
-      
-       
-    },10000)
-
-    return ()=>clearInterval()
-  }
-
-  useEffect(()=>{
-
-  },[])
 
   
   
