@@ -23,7 +23,7 @@ const SamplePrint = () => {
           title="Print BarCode"
         />
       </View>
-      <View style={styles.btn}>
+      {/* <View style={styles.btn}>
         <Button
           onPress={async () => {
             await BluetoothEscposPrinter.printQRCode(
@@ -35,18 +35,20 @@ const SamplePrint = () => {
           }}
           title="Print QRCode"
         />
-      </View>
+      </View> */}
 {/* <---------imprime salto de linea--------------------> */}
       <View style={styles.btn}>
         <Button
           onPress={async () => {
-            await BluetoothEscposPrinter.printerUnderLine(2);
-            await BluetoothEscposPrinter.printText('Prawito Hudoro\r\n', {
-              encoding: 'GBK',
-              codepage: 0,
-              widthtimes: 0,
-              heigthtimes: 0,
-              fonttype: 1,
+            await BluetoothEscposPrinter.printerUnderLine(0);
+            await BluetoothEscposPrinter.printText('att: tu Mario', {
+              encoding: 'UTF-8',
+              codepage: 1,
+              widthtimes: 0.1,
+              heigthtimes: 1,
+              fonttype: 0,
+              
+              
             });
             await BluetoothEscposPrinter.printerUnderLine(0);
             await BluetoothEscposPrinter.printText('\r\n\r\n\r\n', {});
@@ -55,7 +57,9 @@ const SamplePrint = () => {
         />
       </View>
 {/* <---------fin imprime salto de linea--------------------> */}
-      <View style={styles.btn}>
+
+
+      {/* <View style={styles.btn}>
         <Button
           title="Print Struk Belanja"
           onPress={async () => {
@@ -204,7 +208,7 @@ const SamplePrint = () => {
             }
           }}
         />
-      </View>
+      </View> */}
     </View>
   );
 };

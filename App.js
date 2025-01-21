@@ -16,6 +16,7 @@ import { PERMISSIONS, requestMultiple, RESULTS } from 'react-native-permissions'
 import ItemList from './ItemList';
 import SamplePrint from './SamplePrint';
 import { styles } from './styles';
+import { DevSettings } from 'react-native';
 
 const App = () => {
   const [pairedDevices, setPairedDevices] = useState([]);
@@ -24,6 +25,8 @@ const App = () => {
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState('');
   const [boundAddress, setBoundAddress] = useState('');
+  const [permiso, setPermiso] = useState(false)
+  const [conectado, setConectado] = useState(false)
 
 
   //<--------------------useefect------------------>
@@ -53,6 +56,8 @@ const App = () => {
     } else if (Platform.OS === 'android') {
       DeviceEventEmitter.addListener(BluetoothManager.EVENT_DEVICE_ALREADY_PAIRED, rsp => {
         deviceAlreadPaired(rsp);
+        console.log(rsp);
+        
         
       });
       DeviceEventEmitter.addListener(BluetoothManager.EVENT_DEVICE_FOUND, rsp => {
@@ -91,6 +96,7 @@ const App = () => {
           pared = pared.concat(ds || []);
         }
         setPairedDevices(pared);
+
       }
     },
     [pairedDevices],
@@ -125,6 +131,8 @@ const App = () => {
     [foundDs],
   );
 
+
+  //<--------conecta impresora----------------->
   const connect = row => {
     setLoading(true);
     BluetoothManager.connect(row.address).then(
@@ -139,7 +147,7 @@ const App = () => {
       },
     );
   };
-
+//<--------fin conecta impresora----------------->
   const unPair = address => {
     setLoading(true);
     BluetoothManager.unpaire(address).then(
@@ -182,6 +190,8 @@ const App = () => {
 
   //<------------fin escaneamos dispositivos--------------->
 
+  //<-----------solicitud de permisos--------------->
+
   const scan = useCallback(() => {
     try {
       async function blueTooth() {
@@ -214,8 +224,11 @@ const App = () => {
       console.warn(err);
     }
   }, [scanDevices]);
+
+  //<-----------solicitud de permisos--------------->
   
   //<------------solicitamos premisos para escanear dispositivos------------->
+
   const scanBluetoothDevice = async () => {
     setLoading(true);
     try {
@@ -228,6 +241,8 @@ const App = () => {
       if (request['android.permission.ACCESS_FINE_LOCATION'] === RESULTS.GRANTED) {
         scanDevices();
         setLoading(false);
+        setPermiso(true)
+        
       } else {
         setLoading(false);
       }
@@ -236,6 +251,52 @@ const App = () => {
     }
   };
   //<------------fin solicitud permisos para escanear dispositivos------------->
+
+  useEffect(()=>{
+
+    const inicio = async ()=>{
+      if (pairedDevices.length == 0){
+        await scanBluetoothDevice()
+        console.log('escaneando dispositivos');
+        
+      }
+      else{
+        //connect(pairedDevices[0])
+        console.log('conectado a ',pairedDevices[0], 'linea 264');
+        
+      }
+    
+      
+    }
+    
+    inicio()
+  },[])
+
+  const conectarImpresora = ()=>{
+    setInterval(()=>{
+      
+      
+       
+    },10000)
+
+    return ()=>clearInterval()
+  }
+
+  useEffect(()=>{
+
+  },[])
+
+  
+  
+  
+
+  
+
+ 
+    
+
+
+
 
   return (
       <ScrollView style={styles.container}>
@@ -266,7 +327,11 @@ const App = () => {
             return (
               <ItemList
                 key={index}
-                onPress={() => connect(item)}
+                onPress={() => {
+                  connect(item)
+                  console.log(item);
+                  
+                }}
                 label={item.name}
                 value={item.address}
                 connected={item.address === boundAddress}
