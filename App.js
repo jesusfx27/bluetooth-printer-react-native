@@ -67,7 +67,7 @@ const App = () => {
         deviceAlreadPaired(rsp);
         const dispositivo = JSON.parse(rsp.devices)
         connect(dispositivo[0]);
-        console.log('conectado a impresora');
+        console.log('conectado a impresora linea 70');
         
       });
       DeviceEventEmitter.addListener(BluetoothManager.EVENT_DEVICE_FOUND, rsp => {
@@ -281,55 +281,17 @@ const App = () => {
 
   return (
       <ScrollView style={styles.container}>
-        <View style={styles.bluetoothStatusContainer}>
-          <Text style={styles.bluetoothStatus(bleOpend ? '#47BF34' : '#A8A9AA')}>
-            Bluetooth {bleOpend ? 'Activo' : 'Desactivado'}
-          </Text>
-        </View>
-        {!bleOpend && <Text style={styles.bluetoothInfo}>Activa bluetooht</Text>}
-        <Text style={styles.sectionTitle}>Impresora Activa</Text>
-        {boundAddress.length > 0 && (
-          <ItemList
-            label={name}
-            value={boundAddress}
-            onPress={() => unPair(boundAddress)}
-            actionText="Desconectar"
-            color="#E9493F"
-          />
-        )}
-        {boundAddress.length < 1 && (
-          <Text style={styles.printerInfo}>todavia no hay impresora conectada</Text>
-        )}
-        {/* aqui se muestra la lista de impresoras encontradas */}
-        <Text style={styles.sectionTitle}>Dispositivos Encontrados:</Text>
-        {loading ? <ActivityIndicator animating={true} /> : null}
-        <View style={styles.containerList}>
-          {pairedDevices.map((item, index) => {
-            return (
-              <ItemList
-                key={index}
-                onPress={() => {
-                  connect(item)
-                  console.log(item);
-                  
-                }}
-                label={item.name}
-                value={item.address}
-                connected={item.address === boundAddress}
-                actionText="Conectar"
-                color="#00BCD4"
-              />
-              
-            );
-          })}
-          {/* aqui se muestra la lista de impresoras encontradas final */}
-        </View>
+        <View>
+        <Text>app</Text>
+        
+        
+       
+       
+        
         <SamplePrint />
-        <Button
-          onPress={() => scanBluetoothDevice()}
-          title="Scan Bluetooth"
-        />
+        
         <View style={{height: 100}} />
+        </View>
       </ScrollView>
   );
 };
