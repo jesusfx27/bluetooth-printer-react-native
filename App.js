@@ -10,14 +10,18 @@ import {
   ToastAndroid,
   View,
   Button,
+  TextInput,
+  Pressable,
+  StyleSheet,
+  Alert
 } from 'react-native';
 import { BluetoothManager } from 'react-native-bluetooth-escpos-printer';
 import { PERMISSIONS, requestMultiple, RESULTS } from 'react-native-permissions';
 import ItemList from './ItemList';
 import SamplePrint from './SamplePrint';
-import { styles } from './styles';
 import { DevSettings } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import GlobalStyles from './GlobalStyles';
 
 const App = () => {
   const [pairedDevices, setPairedDevices] = useState([]);
@@ -27,12 +31,16 @@ const App = () => {
   const [name, setName] = useState('');
   const [boundAddress, setBoundAddress] = useState('');
   const [permiso, setPermiso] = useState(false)
-  const [conectado, setConectado] = useState(false)
+  const [sucursal, setSucursal]= useState('')
+  const [restaurante, setRestaurante]= useState(false)
+  const [pedidos, setPedidos] = useState('')
+  const [reservas, setReservas]= useState('')
+  const [listaPedidos, setListaPedidos] = useState([])
 
-  useEffect(()=>{
-    scanBluetoothDevice()
-    console.log('escaneando dispositivos');
-},[])
+//   useEffect(()=>{
+//     scanBluetoothDevice()
+//     console.log('escaneando dispositivos');
+// },[])
 
 
 
@@ -264,36 +272,107 @@ const App = () => {
   //<------------fin solicitud permisos para escanear dispositivos------------->
 
   
+  const sucursalValida = () => {
+    if (sucursal > 0 && sucursal < 3){
+      console.log("sucursal valida");
+      setSucursal(sucursal)
+      consultarApi()
+      setRestaurante(true)
+      
+    }else{
 
+      Alert.alert(
+        'Error',
+        'No existe sucursal'
+      )
+    }
 
+  }
 
-  
-  
-  
+  const consultarApi = async () => {
 
-  
+    try {
 
- 
-    
+      const reservasApi = `https://restaurant.ninjastudio.dev/api/reservasBySucursal/${sucursal}`
+      const pedidosApi = `https://restaurant.ninjastudio.dev/api/pedidosBySucursal/${sucursal}`
+      const response = await fetch(pedidosApi)
+      const respuesta = await fetch(reservasApi)
 
+      if(response){
+        const result = await response.json()
+        const filtrarpedidos = (result.pedidos)
+        
+        setListaPedidos(filtrarpedidos)
+        console.log(filtrarpedidos);
+        
 
+        const resultado = await respuesta.json()
+        const reservasFiltrades = resultado.reservas
+        setReservas(reservasFiltrades);
+        console.log(reservasFiltrades);
+        
+        
+        
+        // const pedidosfiltrados = filtrarpedidos.filter((pedido) => pedido.estado === 'Pendiente' && pedido.sucursal === sucursal) 
+        // setListaPedidos(pedidosfiltrados)
+        // console.log(pedidosfiltrados);
+        
+        //añadir logica para api reservas
+
+      }
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
 
 
   return (
-      <ScrollView style={styles.container}>
-        <View>
-        <Text>app</Text>
+    <>
+    
+      <ScrollView>
+      <View style={GlobalStyles.top}></View>
         
+        <View style={GlobalStyles.container}>
+        <Text style={styles.label}>
+          Selecciona Sucursal
+        </Text>
+        <TextInput 
+        style={styles.input}
+        placeholder= 'Sucursal'
+        keyboardType= 'numeric'
+        onChangeText= {setSucursal}/>
+        <Pressable 
+        style={[GlobalStyles.botonOk, styles.btnsize]}
+        onPress= {()=> sucursalValida()}>
+          <Text style={GlobalStyles.txtOk}>Ver Pedidos</Text>
+        </Pressable>
         
-       
-       
-        
-        <SamplePrint />
-        
-        <View style={{height: 100}} />
         </View>
       </ScrollView>
+      </>
   );
 };
+const styles = StyleSheet.create({
+  input: {
+    backgroundColor: '#d9d9d9',
+    borderRadius: 10,
+    marginVertical: 20,
+    marginBottom: 30,
+    textAlign: 'center'
+  },
+  label:{
+    textAlign: 'center',
+    fontSize: 24,
+    fontWeight : 'bold',
+    color: '#000'
+  },
+  btnsize:{
+    marginHorizontal: '30%'
+    
+  }
+ 
+})
 
 export default App;
