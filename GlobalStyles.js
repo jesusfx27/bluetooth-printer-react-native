@@ -17,7 +17,8 @@ const GlobalStyles = StyleSheet.create({
     botonOk:{
         backgroundColor: '#cf2323',
         padding: 10,
-        borderRadius: 10
+        borderRadius: 10,
+        fontWeight: 'bold'
 
     },
     txtOk:{
@@ -25,6 +26,20 @@ const GlobalStyles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 16,
 
+    },
+    header:{
+        textAlign: 'center',
+        color : '#fff',
+        fontSize: 20,
+        textTransform: 'capitalize',
+        fontWeight: 'bold',
+        marginBottom: -10
+    },
+    btncancel: {
+        backgroundColor: '#000',
+        padding: 10,
+        borderRadius: 10,
+        fontWeight: 'bold'
     }
 
  

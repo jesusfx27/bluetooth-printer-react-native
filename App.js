@@ -13,7 +13,8 @@ import {
   TextInput,
   Pressable,
   StyleSheet,
-  Alert
+  Alert,
+  Modal
 } from 'react-native';
 import { BluetoothManager } from 'react-native-bluetooth-escpos-printer';
 import { PERMISSIONS, requestMultiple, RESULTS } from 'react-native-permissions';
@@ -22,6 +23,8 @@ import SamplePrint from './SamplePrint';
 import { DevSettings } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import GlobalStyles from './GlobalStyles';
+import ListaPedidos from './ListaPedidos';
+import Pedido from './Pedido';
 
 const App = () => {
   const [pairedDevices, setPairedDevices] = useState([]);
@@ -332,6 +335,7 @@ const App = () => {
     <>
     
       <ScrollView>
+        
       <View style={GlobalStyles.top}></View>
         
         <View style={GlobalStyles.container}>
@@ -349,6 +353,19 @@ const App = () => {
           <Text style={GlobalStyles.txtOk}>Ver Pedidos</Text>
         </Pressable>
         
+        </View>
+        <View>
+          {restaurante && (
+            <Modal
+              visible= {restaurante}
+              animationType= 'slide'>
+
+              <ListaPedidos 
+              listaPedidos= {listaPedidos}
+              reservas= {reservas}/>
+            </Modal>
+          )}
+
         </View>
       </ScrollView>
       </>
