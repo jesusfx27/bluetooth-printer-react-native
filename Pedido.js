@@ -2,14 +2,41 @@ import React, { use, useState } from 'react'
 import {Text, View, StyleSheet, Pressable, Modal, ScrollView} from 'react-native' 
 import GlobalStyles from './GlobalStyles';
 import DetallesPedido from './DetallesPedido';
+import { PrintNewOrder } from './Impresora';
 
  
  
  
-const Pedido = ({listaPedidos, datos}) =>  {
+const Pedido = ({datos, onUpdateList}) =>  {
 
     const [modalDetalles, setModalDetalles] = useState(false)
     const {idPedido, nombre, nota, total} = datos
+
+    
+    
+    const handleUpdate = () =>{
+        if(onUpdateList){
+            onUpdateList()
+        }
+    }
+
+
+
+    const enviandoPedido = async () => {
+
+        await fetch(`https://restaurant.ninjastudio.dev/api/pedidoPut.php?idPedido=${idPedido}&estado=Delivery`, {
+            method: 'PUT', //
+            data:{
+                estado: "Delivery"
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+               //aqui llamamos a imprimir
+               handleUpdate()
+            })
+            .catch(error => console.error('Error al cambiar el estado:', error));
+    };
     
     
     
@@ -34,13 +61,23 @@ const Pedido = ({listaPedidos, datos}) =>  {
 
                     <View style={styles.btns}>
                         <Pressable style= {GlobalStyles.botonOk}
-                        onPress={()=> console.log('pedido impreso')
+                        onPress={()=> {
+                            console.log('pedido impreso')
+                            //PrintNewOrder(datos)
+                        }
                         }>
                             <Text style= {GlobalStyles.txtOk}>Imprimir</Text>
                         </Pressable>
                         
                         <Pressable style= {GlobalStyles.btncancel}
-                        onPress={()=> console.log('pedido enviado')
+                        onPress={()=> {
+                            console.log('pedido enviado')
+                            enviandoPedido()
+                            
+                            
+                            
+                            
+                        }
                         }>
                             <Text style= {GlobalStyles.txtOk} >Enviado</Text>
                         </Pressable>

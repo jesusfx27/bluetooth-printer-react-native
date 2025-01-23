@@ -1,24 +1,29 @@
 import React from 'react' 
 import {Text, View, StyleSheet, Pressable, FlatList} from 'react-native' 
 import GlobalStyles from './GlobalStyles'
-import { PrintNewOrder } from './Impresora'
  
  
-const DetallesPedido = ({datos, setModalDetalles}) =>  {
-    const {idPedido, nombre, nota, total} = datos
+const NuevoPedido = ({setModalNewOrder, listaPedidos}) =>  {
 
 
-    const listaProductos= JSON.parse(datos.productos)
+    //<-----------logica de consultar nuevo pedido----------->
+    //falta api
+    const newOrder= listaPedidos[0]
+    const {idPedido, nombre, nota, total} = newOrder
+
+
+    const listaProductos= JSON.parse(newOrder.productos)
     console.log(listaProductos);
 
    
+  
     
     
     
     return (
         <>
             <View style={GlobalStyles.top}>
-                <Text style={GlobalStyles.header}>detalles del pedido</Text>
+                <Text style={GlobalStyles.header}>Nuevo Pedido</Text>
             </View>
             
                 <View style={styles.contenedor}>
@@ -28,7 +33,7 @@ const DetallesPedido = ({datos, setModalDetalles}) =>  {
 
 
 
-                    <FlatList
+                    { <FlatList
                         data={listaProductos}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item }) => (
@@ -41,7 +46,7 @@ const DetallesPedido = ({datos, setModalDetalles}) =>  {
                    
                          
                 )}
-            />
+            /> }
 
                     <Text style={styles.total}>{total} €</Text>
                 
@@ -50,15 +55,13 @@ const DetallesPedido = ({datos, setModalDetalles}) =>  {
 
             
             <View style={styles.organizador}>
-                <Pressable style={[GlobalStyles.botonOk, styles.btnSize]}
-                // onPress={()=> PrintNewOrder(datos)}
-                >
-                    <Text style= {GlobalStyles.txtOk}>Imprimir</Text>
+                <Pressable style={[GlobalStyles.botonOk, styles.btnSize]}>
+                    <Text style= {GlobalStyles.txtOk}>Aceptar</Text>
                 </Pressable>
 
                 <Pressable style={[GlobalStyles.btncancel, styles.btnSize]}
-                onPress= {()=> setModalDetalles(false)}>
-                    <Text style= {GlobalStyles.txtOk}>Cerrar</Text>
+                onPress= {()=> setModalNewOrder(false)}>
+                    <Text style= {GlobalStyles.txtOk}>Rechazar</Text>
                 </Pressable>
             </View>
         </>
@@ -119,4 +122,4 @@ total:{
  })
 
 
-export default DetallesPedido;
+export default NuevoPedido;

@@ -1,22 +1,51 @@
-import React from 'react' 
-import {Text, View, StyleSheet, ScrollView} from 'react-native' 
+import React, { useState } from 'react' 
+import {Text, View, StyleSheet, ScrollView, Modal} from 'react-native' 
 import GlobalStyles from './GlobalStyles'
 import Pedido from './Pedido'
 import Reservas from './Reservas'
+import NuevoPedido from './NuevoPedido'
  
- 
-const ListaPedidos = ({listaPedidos, reservas}) =>  {
+ //<-----------------------pagina principal------------------------>
 
+
+
+const ListaPedidos = ({listaPedidos, reservas, setListaPedidos, setReservas, onUpdateList}) =>  {
+    
+  const [modalNewOrder, setModalNewOrder] = useState(false)
+
+    const handleUpdate = () =>{
+        if(onUpdateList){
+            onUpdateList()
+        }
+    }
+
+    
+
+    const AceptarPedido = async () => {
+   
+
+        await fetch(`https://restaurant.ninjastudio.dev/api/pedidoPut.php?idPedido=${idPedido}`, {
+            method: 'PUT', //
+            data:{
+                estado: "Preparando"
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+               //aqui llamamos a imprimir
+            })
+            .catch(error => console.error('Error al cambiar el estado:', error));
+    };
 
     return (
         <>
-        <ScrollView>
+        
             <View style={GlobalStyles.top}>
                 <Text style={GlobalStyles.header}>home</Text>
             </View>
-
+            <ScrollView>
             <View>
-                <Text style={styles.label}>Pedidos</Text>
+                <Text style={styles.label}>Preparando</Text>
                 {listaPedidos.length == 0 &&( <Text style={styles.label}>no hay pedidos aun</Text>)}
                 
             </View> 
@@ -25,7 +54,7 @@ const ListaPedidos = ({listaPedidos, reservas}) =>  {
                             <Pedido 
                             key={datos.idPedido}
                             datos= {datos}
-                            listaPedidos={listaPedidos}/>)
+                            onUpdateList={handleUpdate}/>)
                           ))}
             </View>
             <View>
@@ -42,6 +71,18 @@ const ListaPedidos = ({listaPedidos, reservas}) =>  {
                           ))}
             </View>
 
+            <View>
+                {modalNewOrder && (
+                    <Modal
+                    visible= {modalNewOrder}
+                    animationType= 'slide'>
+                        <NuevoPedido 
+                        setModalNewOrder={setModalNewOrder}
+                        listaPedidos={listaPedidos}/>
+                    </Modal>
+                )}
+            </View>
+
             </ScrollView>
         </>
 )} 
@@ -54,7 +95,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#000',
     marginTop: 30,
-    textTransform: 'capitalize'
+    textTransform: 'capitalize',
+    marginBottom: 20
  }
  
  })

@@ -40,10 +40,10 @@ const App = () => {
   const [reservas, setReservas]= useState('')
   const [listaPedidos, setListaPedidos] = useState([])
 
-//   useEffect(()=>{
-//     scanBluetoothDevice()
-//     console.log('escaneando dispositivos');
-// },[])
+//    useEffect(()=>{
+//      scanBluetoothDevice()
+//      console.log('escaneando dispositivos');
+//  },[])
 
 
 
@@ -330,14 +330,18 @@ const App = () => {
     }
   }
 
+  const handleUpdate = ()=>{
+        consultarApi()
+  }
+
 
   return (
     <>
     
-      <ScrollView>
-        
+      
+    <ScrollView>
       <View style={GlobalStyles.top}></View>
-        
+      
         <View style={GlobalStyles.container}>
         <Text style={styles.label}>
           Selecciona Sucursal
@@ -362,7 +366,11 @@ const App = () => {
 
               <ListaPedidos 
               listaPedidos= {listaPedidos}
-              reservas= {reservas}/>
+              reservas= {reservas}
+              setListaPedidos={setListaPedidos}
+              setReservas={setReservas}
+              onUpdateList={handleUpdate}
+              />
             </Modal>
           )}
 
