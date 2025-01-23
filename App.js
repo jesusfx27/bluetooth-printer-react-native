@@ -25,6 +25,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import GlobalStyles from './GlobalStyles';
 import ListaPedidos from './ListaPedidos';
 import Pedido from './Pedido';
+import NuevoPedidoLista from './NuevoPedidoLista';
 
 const App = () => {
   const [pairedDevices, setPairedDevices] = useState([]);
@@ -39,6 +40,10 @@ const App = () => {
   const [pedidos, setPedidos] = useState('')
   const [reservas, setReservas]= useState('')
   const [listaPedidos, setListaPedidos] = useState([])
+  const [newOrderList, setNewOrderList] = useState([])
+  const [modalNuevoPedido, setModalNuevoPedido] = useState(false)
+  
+  
 
 //    useEffect(()=>{
 //      scanBluetoothDevice()
@@ -291,15 +296,66 @@ const App = () => {
     }
 
   }
+// api pedidos preparando
+  // https://restaurant.ninjastudio.dev/api/pedidosByPreparando/1
+  //api pedidos nuevos
+  // https://restaurant.ninjastudio.dev/api/pedidosBySucursal/
+  
 
+  const consultarApiNuevoPedido = async () => {
+    try {
+      
+      const reservasApi = await fetch(`https://restaurant.ninjastudio.dev/api/reservasBySucursal/${sucursal}`)
+      const resultado = await reservasApi.json()
+        if(resultado){
+          
+          const reservasFiltrades = resultado.reservas
+          setReservas(reservasFiltrades);
+
+        }
+      
+        const respuesta = await fetch(`https://restaurant.ninjastudio.dev/api/pedidosBySucursal/${sucursal}`)
+        if(respuesta){
+          const result = await respuesta.json()
+          const response = await result.pedidos
+
+          console.log(response, 'aqui');
+          
+          setNewOrderList(response)
+          console.log(newOrderList);
+        if(newOrderList.length > 0 || reservas.length > 0){
+          setModalNuevoPedido(true)
+        }
+        
+      }
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+  
+   useEffect(()=>{
+     const interval = setInterval(() => {
+       consultarApiNuevoPedido()
+      
+      
+    }, 5000);
+    return () => clearInterval(interval);
+  },[])
+
+  
+  
+  
   const consultarApi = async () => {
 
     try {
 
-      const reservasApi = `https://restaurant.ninjastudio.dev/api/reservasBySucursal/${sucursal}`
-      const pedidosApi = `https://restaurant.ninjastudio.dev/api/pedidosBySucursal/${sucursal}`
+       
+      
+      
+
+      const pedidosApi = `https://restaurant.ninjastudio.dev/api/pedidosByPreparando/${sucursal}`
       const response = await fetch(pedidosApi)
-      const respuesta = await fetch(reservasApi)
 
       if(response){
         const result = await response.json()
@@ -309,10 +365,9 @@ const App = () => {
         console.log(filtrarpedidos);
         
 
-        const resultado = await respuesta.json()
-        const reservasFiltrades = resultado.reservas
-        setReservas(reservasFiltrades);
-        console.log(reservasFiltrades);
+        
+        
+        
         
         
         
@@ -332,8 +387,8 @@ const App = () => {
 
   const handleUpdate = ()=>{
         consultarApi()
+        consultarApiNuevoPedido()
   }
-
 
   return (
     <>
@@ -358,6 +413,7 @@ const App = () => {
         </Pressable>
         
         </View>
+        
         <View>
           {restaurante && (
             <Modal
@@ -370,6 +426,10 @@ const App = () => {
               setListaPedidos={setListaPedidos}
               setReservas={setReservas}
               onUpdateList={handleUpdate}
+              newOrderList={newOrderList}
+              setModalNuevoPedido= {setModalNuevoPedido}
+              modalNuevoPedido={modalNuevoPedido}
+              
               />
             </Modal>
           )}

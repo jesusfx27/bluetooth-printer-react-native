@@ -1,29 +1,36 @@
 import React from 'react' 
-import {Text, View, StyleSheet, Pressable, FlatList} from 'react-native' 
+import {Text, View, StyleSheet, Pressable, FlatList, Alert} from 'react-native' 
 import GlobalStyles from './GlobalStyles'
+import { PrintNewOrder } from './Impresora'
  
  
-const NuevoPedido = ({setModalNewOrder, listaPedidos}) =>  {
+const DetallesPedido = ({datos, setModalDetalles, RechazarPedido, AceptarPedido, setOrderId}) =>  {
+    const {idPedido, nombre, nota, total} = datos
+    setOrderId(idPedido)
 
-
-    //<-----------logica de consultar nuevo pedido----------->
-    //falta api
-    const newOrder= listaPedidos[0]
-    const {idPedido, nombre, nota, total} = newOrder
-
-
-    const listaProductos= JSON.parse(newOrder.productos)
+    const listaProductos= JSON.parse(datos.productos)
     console.log(listaProductos);
 
-   
-  
+    const mostrarAlerta = () =>{
+        Alert.alert(
+            'Aviso!',
+            'Seguro que deseas rechazar?',
+            [
+                {text: 'Cancelar'},
+                {text: 'Si, Rechazar', onPress:()=> {
+                    RechazarPedido()
+                    setModalDetalles(false)
+                } }
+            ]
+        )
+    }
     
     
     
     return (
         <>
             <View style={GlobalStyles.top}>
-                <Text style={GlobalStyles.header}>Nuevo Pedido</Text>
+                <Text style={GlobalStyles.header}>detalles del pedido</Text>
             </View>
             
                 <View style={styles.contenedor}>
@@ -33,7 +40,7 @@ const NuevoPedido = ({setModalNewOrder, listaPedidos}) =>  {
 
 
 
-                    { <FlatList
+                    <FlatList
                         data={listaProductos}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item }) => (
@@ -46,7 +53,7 @@ const NuevoPedido = ({setModalNewOrder, listaPedidos}) =>  {
                    
                          
                 )}
-            /> }
+            />
 
                     <Text style={styles.total}>{total} €</Text>
                 
@@ -55,12 +62,21 @@ const NuevoPedido = ({setModalNewOrder, listaPedidos}) =>  {
 
             
             <View style={styles.organizador}>
-                <Pressable style={[GlobalStyles.botonOk, styles.btnSize]}>
+                <Pressable style={[GlobalStyles.botonOk, styles.btnSize]}
+                onPress={()=> {
+                    PrintNewOrder(datos)
+                    AceptarPedido()
+                }}>
                     <Text style= {GlobalStyles.txtOk}>Aceptar</Text>
                 </Pressable>
 
                 <Pressable style={[GlobalStyles.btncancel, styles.btnSize]}
-                onPress= {()=> setModalNewOrder(false)}>
+                onPress= {()=>{ 
+                    console.log('pedido recahzada')
+                    mostrarAlerta()
+                    }
+                    
+                }>
                     <Text style= {GlobalStyles.txtOk}>Rechazar</Text>
                 </Pressable>
             </View>
@@ -122,4 +138,4 @@ total:{
  })
 
 
-export default NuevoPedido;
+export default DetallesPedido;

@@ -3,28 +3,44 @@ import {Text, View, StyleSheet, ScrollView, Modal} from 'react-native'
 import GlobalStyles from './GlobalStyles'
 import Pedido from './Pedido'
 import Reservas from './Reservas'
-import NuevoPedido from './NuevoPedido'
+import NuevoPedidoDetalles from './NuevoPedidoDetalles'
+import NuevoPedidoLista from './NuevoPedidoLista'
  
  //<-----------------------pagina principal------------------------>
 
 
 
-const ListaPedidos = ({listaPedidos, reservas, setListaPedidos, setReservas, onUpdateList}) =>  {
+const ListaPedidos = ({listaPedidos, reservas, setListaPedidos, setReservas, onUpdateList, newOrderList, modalNuevoPedido, setModalNuevoPedido}) =>  {
     
   const [modalNewOrder, setModalNewOrder] = useState(false)
+  const [orderId, setOrderId] = useState('')
 
     const handleUpdate = () =>{
         if(onUpdateList){
             onUpdateList()
         }
     }
+    const EnviandoPedido = async () => {
 
+        await fetch(`https://restaurant.ninjastudio.dev/api/pedidoPut.php?idPedido=${orderId}&estado=Delivery`, {
+            method: 'PUT', //
+            data:{
+                estado: "Delivery"
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+               //aqui llamamos a imprimir
+               handleUpdate()
+            })
+            .catch(error => console.error('Error al cambiar el estado:', error));
+    };
     
 
     const AceptarPedido = async () => {
    
 
-        await fetch(`https://restaurant.ninjastudio.dev/api/pedidoPut.php?idPedido=${idPedido}`, {
+        await fetch(`https://restaurant.ninjastudio.dev/api/pedidoPut.php?idPedido=${orderId}&estado=Preparando`, {
             method: 'PUT', //
             data:{
                 estado: "Preparando"
@@ -33,6 +49,23 @@ const ListaPedidos = ({listaPedidos, reservas, setListaPedidos, setReservas, onU
             .then(response => response.json())
             .then(data => {
                //aqui llamamos a imprimir
+               handleUpdate()
+            })
+            .catch(error => console.error('Error al cambiar el estado:', error));
+    };
+    const RechazarPedido = async () => {
+   
+
+        await fetch(`https://restaurant.ninjastudio.dev/api/pedidoPut.php?idPedido=${orderId}&estado=Rechazado`, {
+            method: 'PUT', //
+            data:{
+                estado: "Preparando"
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+               //aqui llamamos a imprimir
+               handleUpdate()
             })
             .catch(error => console.error('Error al cambiar el estado:', error));
     };
@@ -45,7 +78,7 @@ const ListaPedidos = ({listaPedidos, reservas, setListaPedidos, setReservas, onU
             </View>
             <ScrollView>
             <View>
-                <Text style={styles.label}>Preparando</Text>
+                <Text style={styles.label}>en Preparacion</Text>
                 {listaPedidos.length == 0 &&( <Text style={styles.label}>no hay pedidos aun</Text>)}
                 
             </View> 
@@ -54,9 +87,26 @@ const ListaPedidos = ({listaPedidos, reservas, setListaPedidos, setReservas, onU
                             <Pedido 
                             key={datos.idPedido}
                             datos= {datos}
-                            onUpdateList={handleUpdate}/>)
+                            onUpdateList={handleUpdate}
+                            EnviandoPedido={EnviandoPedido}
+                            />)
                           ))}
             </View>
+            <View>
+                    {newOrderList.length > 0 &&(
+                      <Modal visible = {true}
+                      animationType= 'slide'>
+                        <NuevoPedidoLista
+                        newOrderList={newOrderList}
+                        setModalNuevoPedido= {setModalNuevoPedido}
+                        reservas={reservas}
+                        setOrderId={setOrderId}
+                        AceptarPedido={AceptarPedido}
+                        RechazarPedido={RechazarPedido}
+                        />
+                      </Modal>
+                    )}
+                    </View>
             <View>
                 <Text style={styles.label}>reservas</Text>
                 {reservas.length == 0 && (<Text style={styles.label}>no hay reservas</Text>)}
@@ -76,9 +126,11 @@ const ListaPedidos = ({listaPedidos, reservas, setListaPedidos, setReservas, onU
                     <Modal
                     visible= {modalNewOrder}
                     animationType= 'slide'>
-                        <NuevoPedido 
+                        <NuevoPedidoDetalles
                         setModalNewOrder={setModalNewOrder}
-                        listaPedidos={listaPedidos}/>
+                        listaPedidos={listaPedidos}
+                        setOrderId={setOrderId}
+                        AceptarPedido={AceptarPedido}/>
                     </Modal>
                 )}
             </View>

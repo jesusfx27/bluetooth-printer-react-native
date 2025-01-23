@@ -1,18 +1,20 @@
 import React, { use, useState } from 'react' 
-import {Text, View, StyleSheet, Pressable, Modal, ScrollView} from 'react-native' 
+import {Text, View, StyleSheet, Pressable, Modal, ScrollView, Alert} from 'react-native' 
 import GlobalStyles from './GlobalStyles';
 import DetallesPedido from './DetallesPedido';
 import { PrintNewOrder } from './Impresora';
+import DetallesNuevoPedido from './DetallesNuevoPedido'
 
  
  
  
-const Pedido = ({datos, onUpdateList, setUpdate}) =>  {
-
-    const [modalDetalles, setModalDetalles] = useState(false)
-    const {idPedido, nombre, nota, total} = datos
+const PedidoNuevo = ({datos, onUpdateList, setUpdate, setOrderId, AceptarPedido, RechazarPedido}) =>  {
 
     
+    const [modalDetalles, setModalDetalles] = useState(false)
+    const {idPedido, nombre, nota, total} = datos
+    setOrderId(idPedido)
+   
     
     const handleUpdate = () =>{
         if(onUpdateList){
@@ -20,23 +22,22 @@ const Pedido = ({datos, onUpdateList, setUpdate}) =>  {
         }
     }
 
+ const mostrarAlerta = () =>{
+        Alert.alert(
+            'Aviso!',
+            'Seguro que deseas rechazar?',
+            [
+                {text: 'Cancelar'},
+                {text: 'Si, Rechazar', onPress:()=> {
+                    RechazarPedido()
+
+                } }
+            ]
+        )
+    }
 
 
-    const EnviandoPedido = async () => {
 
-        await fetch(`https://restaurant.ninjastudio.dev/api/pedidoPut.php?idPedido=${idPedido}&estado=Delivery`, {
-            method: 'PUT', //
-            data:{
-                estado: "Delivery"
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-               //aqui llamamos a imprimir
-               handleUpdate()
-            })
-            .catch(error => console.error('Error al cambiar el estado:', error));
-    };
     
     
     
@@ -64,22 +65,18 @@ const Pedido = ({datos, onUpdateList, setUpdate}) =>  {
                         onPress={()=> {
                             console.log('pedido impreso')
                             PrintNewOrder(datos)
+                            AceptarPedido()
                         }
                         }>
-                            <Text style= {GlobalStyles.txtOk}>Imprimir</Text>
+                            <Text style= {GlobalStyles.txtOk}>Aceptar</Text>
                         </Pressable>
                         
                         <Pressable style= {GlobalStyles.btncancel}
                         onPress={()=> {
-                            console.log('pedido enviado')
-                            EnviandoPedido()
-                            
-                            
-                            
-                            
-                        }
-                        }>
-                            <Text style= {GlobalStyles.txtOk} >Enviado</Text>
+                            console.log('pedido rechazado')
+                            mostrarAlerta()
+                        }}>
+                            <Text style= {GlobalStyles.txtOk} >Rechazar</Text>
                         </Pressable>
                     </View>    
                 </View>
@@ -88,9 +85,13 @@ const Pedido = ({datos, onUpdateList, setUpdate}) =>  {
                 <Modal
                     visible= {modalDetalles}
                     animationType= 'slide'>
-                    <DetallesPedido 
+                    <DetallesNuevoPedido 
                     datos={datos}
                     setModalDetalles={setModalDetalles}
+                    RechazarPedido={RechazarPedido}
+                    AceptarPedido={AceptarPedido}
+                    setOrderId={setOrderId}
+                    
                     />
                 </Modal>
             )}
@@ -126,4 +127,4 @@ const styles = StyleSheet.create({
  })
 
 
-export default Pedido;
+export default PedidoNuevo;
