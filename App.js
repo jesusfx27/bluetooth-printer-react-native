@@ -344,12 +344,10 @@ const App = () => {
       }
 
       if(newOrderList.length > 0){
-        setModalNuevoPedido(true)
+       // setModalNuevoPedido(true)
         console.log(modalNuevoPedido);
         
 
-      }else{
-        setModalNuevoPedido(false)
       }
      
     } catch (error) {
@@ -388,7 +386,8 @@ const App = () => {
       if(restaurante){
 
         consultarApiNuevoPedido()
-        //consultarReservas()
+        consultarReservas()
+        consultarApi()
         
       }
         

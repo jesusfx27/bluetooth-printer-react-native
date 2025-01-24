@@ -3,14 +3,14 @@ import {Text, View, StyleSheet, Pressable, FlatList} from 'react-native'
 import GlobalStyles from './GlobalStyles'
  
  
-const NuevoPedidoDetalles = ({setModalNewOrder, listaPedidos, setOrderId, AceptarPedido}) =>  {
+const NuevoPedidoDetalles = ({setModalNewOrder, listaPedidos, AceptarPedido}) =>  {
 
 
     //<-----------logica de consultar nuevo pedido----------->
     //falta api
     const newOrder= listaPedidos[0]
     const {idPedido, nombre, nota, total} = newOrder
-    setOrderId(idPedido)
+    
 
     const listaProductos= JSON.parse(newOrder.productos)
     console.log(listaProductos);
@@ -52,7 +52,7 @@ const NuevoPedidoDetalles = ({setModalNewOrder, listaPedidos, setOrderId, Acepta
             
             <View style={styles.organizador}>
                 <Pressable style={[GlobalStyles.botonOk, styles.btnSize]}
-                onPress={()=> {AceptarPedido() 
+                onPress={()=> {AceptarPedido(idPedido) 
                     console.log('pedido aCeptado')
                 }}>
                     <Text style= {GlobalStyles.txtOk}>Aceptar</Text>

@@ -10,7 +10,7 @@ import PedidoNuevo from './PedidoNuevo'
 
 
 
-const ListaPedidos = ({newOrderList, setModalNuevoPedido ,reservas,setOrderId, AceptarPedido, RechazarPedido, setIdReserva,AceptarReserva, RechazarReserva}) =>  {
+const ListaPedidos = ({newOrderList, setModalNuevoPedido ,reservas, AceptarPedido, RechazarPedido, setIdReserva,AceptarReserva, RechazarReserva}) =>  {
     
   const [modalNewOrder, setModalNewOrder] = useState(false)
 
@@ -33,7 +33,6 @@ const ListaPedidos = ({newOrderList, setModalNuevoPedido ,reservas,setOrderId, A
                             <PedidoNuevo
                             key={datos.idPedido}
                             datos= {datos}
-                            setOrderId={setOrderId}
                             AceptarPedido={AceptarPedido}
                             RechazarPedido={RechazarPedido}
                             />)

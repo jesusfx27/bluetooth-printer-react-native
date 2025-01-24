@@ -4,9 +4,9 @@ import GlobalStyles from './GlobalStyles'
 import { PrintNewOrder } from './Impresora'
  
  
-const DetallesPedido = ({datos, setModalDetalles, RechazarPedido, AceptarPedido, setOrderId}) =>  {
+const DetallesPedido = ({datos, setModalDetalles, RechazarPedido, AceptarPedido}) =>  {
     const {idPedido, nombre, nota, total} = datos
-    setOrderId(idPedido)
+    
 
     const listaProductos= JSON.parse(datos.productos)
     console.log(listaProductos);
@@ -18,7 +18,7 @@ const DetallesPedido = ({datos, setModalDetalles, RechazarPedido, AceptarPedido,
             [
                 {text: 'Cancelar'},
                 {text: 'Si, Rechazar', onPress:()=> {
-                    RechazarPedido()
+                    RechazarPedido(idPedido)
                     
                 } }
             ]
@@ -65,7 +65,7 @@ const DetallesPedido = ({datos, setModalDetalles, RechazarPedido, AceptarPedido,
                 <Pressable style={[GlobalStyles.botonOk, styles.btnSize]}
                 onPress={()=> {
                     PrintNewOrder(datos)
-                    AceptarPedido()
+                    AceptarPedido(idPedido)
                 }}>
                     <Text style= {GlobalStyles.txtOk}>Aceptar</Text>
                 </Pressable>

@@ -1,29 +1,28 @@
-import React, { useState } from 'react' 
-import {Text, View, StyleSheet, ScrollView, Modal} from 'react-native' 
+import React, { useState } from 'react'
+import {Text, View, StyleSheet, ScrollView, Modal} from 'react-native'
 import GlobalStyles from './GlobalStyles'
 import Pedido from './Pedido'
 import Reservas from './Reservas'
 import NuevoPedidoDetalles from './NuevoPedidoDetalles'
 import NuevoPedidoLista from './NuevoPedidoLista'
- 
+import PedidoNuevo from './PedidoNuevo'
+
  //<-----------------------pagina principal------------------------>
 
 
 
 const ListaPedidos = ({listaPedidos, reservas, setListaPedidos, setReservas, onUpdateList, newOrderList, modalNuevoPedido, setModalNuevoPedido}) =>  {
-    
+
   const [modalNewOrder, setModalNewOrder] = useState(false)
-  const [orderId, setOrderId] = useState('')
-  const [idReserva, setIdReserva] = useState('')
 
     const handleUpdate = () =>{
         if(onUpdateList){
             onUpdateList()
         }
     }
-    const EnviandoPedido = async () => {
+    const EnviandoPedido = async (id) => {
 
-        await fetch(`https://restaurant.ninjastudio.dev/api/pedidoPut.php?idPedido=${orderId}&estado=Delivery`, {
+        await fetch(`https://restaurant.ninjastudio.dev/api/pedidoPut.php?idPedido=${id}&estado=Delivery`, {
             method: 'PUT', //
             data:{
                 estado: "Delivery"
@@ -36,12 +35,12 @@ const ListaPedidos = ({listaPedidos, reservas, setListaPedidos, setReservas, onU
             })
             .catch(error => console.error('Error al cambiar el estado:', error));
     };
-    
 
-    const AceptarPedido = async () => {
-   
 
-        await fetch(`https://restaurant.ninjastudio.dev/api/pedidoPut.php?idPedido=${orderId}&estado=Preparando`, {
+    const AceptarPedido = async (id) => {
+
+
+        await fetch(`https://restaurant.ninjastudio.dev/api/pedidoPut.php?idPedido=${id}&estado=Preparando`, {
             method: 'PUT', //
             data:{
                 estado: "Preparando"
@@ -54,10 +53,10 @@ const ListaPedidos = ({listaPedidos, reservas, setListaPedidos, setReservas, onU
             })
             .catch(error => console.error('Error al cambiar el estado:', error));
     };
-    const RechazarPedido = async () => {
-   
+    const RechazarPedido = async (id) => {
 
-        await fetch(`https://restaurant.ninjastudio.dev/api/pedidoPut.php?idPedido=${orderId}&estado=Rechazado`, {
+
+        await fetch(`https://restaurant.ninjastudio.dev/api/pedidoPut.php?idPedido=${id}&estado=Rechazado`, {
             method: 'PUT', //
             data:{
                 estado: "Preparando"
@@ -72,10 +71,10 @@ const ListaPedidos = ({listaPedidos, reservas, setListaPedidos, setReservas, onU
     };
 
 
-    const AceptarReserva = async () => {
-   
+    const AceptarReserva = async (id) => {
 
-        await fetch(`https://restaurant.ninjastudio.dev/api/reservaPut.php?idReserva=${idReserva}&estado=Aceptada`, {
+
+        await fetch(`https://restaurant.ninjastudio.dev/api/reservaPut.php?idReserva=${id}&estado=Aceptada`, {
             method: 'PUT', //
             data:{
                 estado: "Preparando"
@@ -88,10 +87,10 @@ const ListaPedidos = ({listaPedidos, reservas, setListaPedidos, setReservas, onU
             })
             .catch(error => console.error('Error al cambiar el estado:', error));
     };
-    const RechazarReserva = async () => {
-   
+    const RechazarReserva = async (id) => {
 
-        await fetch(`https://restaurant.ninjastudio.dev/api/reservaPut.php?idReserva=${idReserva}&estado=Rechazada`, {
+
+        await fetch(`https://restaurant.ninjastudio.dev/api/reservaPut.php?idReserva=${id}&estado=Rechazada`, {
             method: 'PUT', //
             data:{
                 estado: "Rechazada"
@@ -104,23 +103,33 @@ const ListaPedidos = ({listaPedidos, reservas, setListaPedidos, setReservas, onU
             })
             .catch(error => console.error('Error al cambiar el estado:', error));
     };
-    
-    
+
+
     return (
         <>
-        
+
             <View style={GlobalStyles.top}>
-                <Text style={GlobalStyles.header}>home</Text>
+                <Text style={GlobalStyles.header}>Chako</Text>
             </View>
             <ScrollView>
+
+                {newOrderList.length > 0 && (<Text style={styles.label}>Nuevo Pedido</Text>)}
+                {newOrderList.length > 0 &&(newOrderList.map(datos => (
+                            <PedidoNuevo
+                            key={datos.idPedido}
+                            datos= {datos}
+                            AceptarPedido={AceptarPedido}
+                            RechazarPedido={RechazarPedido}
+                            />)
+                          ))}
             <View>
-                <Text style={styles.label}>en Preparacion</Text>
-                {listaPedidos.length == 0 &&( <Text style={styles.label}>no hay pedidos aun</Text>)}
-                
-            </View> 
-            <View> 
+                {listaPedidos.length > 0 &&(<Text style={styles.label}>en Preparacion</Text> )}
+                {/* {listaPedidos.length == 0 || reservas.length == 0 || newOrderList.length == 0 &&(<Text style={styles.label}>no hay pedidos aun</Text>)} */}
+
+            </View>
+            <View>
                 {listaPedidos.length > 0 &&(listaPedidos.map(datos => (
-                            <Pedido 
+                            <Pedido
                             key={datos.idPedido}
                             datos= {datos}
                             onUpdateList={handleUpdate}
@@ -129,26 +138,62 @@ const ListaPedidos = ({listaPedidos, reservas, setListaPedidos, setReservas, onU
                           ))}
             </View>
             <View>
+                
+                {reservas.length > 0 && (<Text style={styles.label}>reservas</Text>)}
+                
+            </View>
+            <View> 
+                {reservas.length > 0 &&(reservas.map(datos => (
+                            <Reservas 
+                            key={datos.id}
+                            datos= {datos}
+                            reservas={reservas}
+                            AceptarReserva={AceptarReserva}
+                            RechazarReserva={RechazarReserva}/>)
+                          ))}
+            </View>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <View>
                     {newOrderList.length > 0 &&(
-                      <Modal visible = {true}
+                      <Modal visible = {modalNuevoPedido}
                       animationType= 'slide'>
                         <NuevoPedidoLista
                         newOrderList={newOrderList}
                         setModalNuevoPedido= {setModalNuevoPedido}
                         reservas={reservas}
-                        setOrderId={setOrderId}
                         AceptarPedido={AceptarPedido}
                         RechazarPedido={RechazarPedido}
-                        setIdReserva={setIdReserva}
                         AceptarReserva={AceptarReserva}
                         RechazarReserva={RechazarReserva}
-                        
+
                         />
                       </Modal>
                     )}
                     </View>
-            
-            
+
+
 
             <View>
                 {modalNewOrder && (
@@ -167,7 +212,7 @@ const ListaPedidos = ({listaPedidos, reservas, setListaPedidos, setReservas, onU
 
             </ScrollView>
         </>
-)} 
+)}
 
 
 const styles = StyleSheet.create({
@@ -180,7 +225,7 @@ const styles = StyleSheet.create({
     textTransform: 'capitalize',
     marginBottom: 20
  }
- 
+
  })
 
 

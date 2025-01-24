@@ -8,12 +8,12 @@ import DetallesNuevoPedido from './DetallesNuevoPedido'
  
  
  
-const PedidoNuevo = ({datos, onUpdateList, setUpdate, setOrderId, AceptarPedido, RechazarPedido}) =>  {
+const PedidoNuevo = ({datos, onUpdateList, setUpdate, AceptarPedido, RechazarPedido}) =>  {
 
     
     const [modalDetalles, setModalDetalles] = useState(false)
     const {idPedido, nombre, nota, total} = datos
-    setOrderId(idPedido)
+    
    
     
     const handleUpdate = () =>{
@@ -29,7 +29,7 @@ const PedidoNuevo = ({datos, onUpdateList, setUpdate, setOrderId, AceptarPedido,
             [
                 {text: 'Cancelar'},
                 {text: 'Si, Rechazar', onPress:()=> {
-                    RechazarPedido()
+                    RechazarPedido(idPedido)
 
                 } }
             ]
@@ -65,7 +65,8 @@ const PedidoNuevo = ({datos, onUpdateList, setUpdate, setOrderId, AceptarPedido,
                         onPress={()=> {
                             console.log('pedido impreso')
                             PrintNewOrder(datos)
-                            AceptarPedido()
+                            AceptarPedido(idPedido)
+                            
                         }
                         }>
                             <Text style= {GlobalStyles.txtOk}>Aceptar</Text>
@@ -90,7 +91,6 @@ const PedidoNuevo = ({datos, onUpdateList, setUpdate, setOrderId, AceptarPedido,
                     setModalDetalles={setModalDetalles}
                     RechazarPedido={RechazarPedido}
                     AceptarPedido={AceptarPedido}
-                    setOrderId={setOrderId}
                     
                     />
                 </Modal>

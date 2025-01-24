@@ -101,6 +101,8 @@ export const PrintNewOrder = async (datos) => {
                     heigthtimes: 1,
                     fonttype: 0,
       });
+      await BluetoothEscposPrinter.printText('\r\n\r\n\r\n', {}); //espacio en blanco
+      await BluetoothEscposPrinter.printText('\r\n\r\n\r\n', {}); //espacio en blanco
      }
 
 

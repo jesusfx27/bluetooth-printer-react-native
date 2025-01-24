@@ -72,7 +72,7 @@ const Pedido = ({datos, onUpdateList, setUpdate}) =>  {
                         <Pressable style= {GlobalStyles.btncancel}
                         onPress={()=> {
                             console.log('pedido enviado')
-                            EnviandoPedido()
+                            EnviandoPedido(idPedido)
                             
                             
                             

@@ -4,9 +4,9 @@ import GlobalStyles from './GlobalStyles'
 import { printReserva } from './Impresora'
  
  
-const Reservas = ({datos, reservas, setIdReserva, AceptarReserva, RechazarReserva}) =>  {
+const Reservas = ({datos, reservas, AceptarReserva, RechazarReserva}) =>  {
     const {email_cliente, id, nombre_cliente, personas, telefono_cliente,fecha_entrada} = datos
-    setIdReserva(id)
+    
 
     const mostrarAlerta = () =>{
             Alert.alert(
@@ -15,7 +15,7 @@ const Reservas = ({datos, reservas, setIdReserva, AceptarReserva, RechazarReserv
                 [
                     {text: 'Cancelar'},
                     {text: 'Si, Rechazar', onPress:()=> {
-                        RechazarReserva()
+                        RechazarReserva(id)
     
                     } }
                 ]
@@ -41,7 +41,7 @@ const Reservas = ({datos, reservas, setIdReserva, AceptarReserva, RechazarReserv
                         <Pressable style= {GlobalStyles.botonOk}
                         onPress={()=> {console.log('reserva aceptada')
                             printReserva(datos)
-                            AceptarReserva()
+                            AceptarReserva(id)
 
                         }
                         }>

@@ -30,7 +30,7 @@ const GlobalStyles = StyleSheet.create({
     header:{
         textAlign: 'center',
         color : '#fff',
-        fontSize: 20,
+        fontSize: 24,
         textTransform: 'capitalize',
         fontWeight: 'bold',
         marginBottom: -10
