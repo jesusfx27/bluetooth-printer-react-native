@@ -19,7 +19,7 @@ const DetallesPedido = ({datos, setModalDetalles, RechazarPedido, AceptarPedido,
                 {text: 'Cancelar'},
                 {text: 'Si, Rechazar', onPress:()=> {
                     RechazarPedido()
-                    setModalDetalles(false)
+                    
                 } }
             ]
         )

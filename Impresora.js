@@ -3,7 +3,7 @@ import { BluetoothEscposPrinter } from 'react-native-bluetooth-escpos-printer';
  
  
 export const PrintNewOrder = async (datos) => {
-    const {idPedido, nombre, nota, total, createdAt}= datos
+    const {idPedido, nombre, nota, total, createdAt, direccion_cliente, telefono_cliente}= datos
 
 
     const listaProductos= JSON.parse(datos.productos)
@@ -46,7 +46,7 @@ export const PrintNewOrder = async (datos) => {
                    fonttype: 0,
      });
      await BluetoothEscposPrinter.printerUnderLine(0);
-     await BluetoothEscposPrinter.printText(`Pedido #${idPedido}\nCliente: ${nombre}\nNota: ${nota}\nTelefono: \n-------------------------------\n`, {
+     await BluetoothEscposPrinter.printText(`Pedido #${idPedido}\nCliente: ${nombre}\nNota: ${nota}\nTelefono: ${telefono_cliente}\nDireccion: ${direccion_cliente} \n-------------------------------\n`, {
          encoding: 'UTF-8',
                    codepage: 10,
                    widthtimes: 0,
@@ -82,6 +82,26 @@ export const PrintNewOrder = async (datos) => {
                  
      }
 
+
+     export const printReserva = async (datos) =>{
+      const {email_cliente, id, nombre_cliente, personas, telefono_cliente,fecha_entrada} = datos
+      await BluetoothEscposPrinter.printerUnderLine(1);
+      await BluetoothEscposPrinter.printText('\nDatos del cliente \n', {
+          encoding: 'UTF-8',
+                    codepage: 10,
+                    widthtimes: 0,
+                    heigthtimes: 1,
+                    fonttype: 0,
+      });
+      await BluetoothEscposPrinter.printerUnderLine(0);
+      await BluetoothEscposPrinter.printText(`Reserva #${id}\nCliente: ${nombre_cliente}\nEmail: ${email_cliente}\nTelefono:${telefono_cliente}\nFecha: ${fecha_entrada}\nComensales: ${personas} \n-------------------------------\n`, {
+          encoding: 'UTF-8',
+                    codepage: 10,
+                    widthtimes: 0,
+                    heigthtimes: 1,
+                    fonttype: 0,
+      });
+     }
 
 
 

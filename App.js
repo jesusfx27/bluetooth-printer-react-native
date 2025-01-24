@@ -38,17 +38,30 @@ const App = () => {
   const [sucursal, setSucursal]= useState('')
   const [restaurante, setRestaurante]= useState(false)
   const [pedidos, setPedidos] = useState('')
-  const [reservas, setReservas]= useState('')
+  const [reservas, setReservas]= useState([])
   const [listaPedidos, setListaPedidos] = useState([])
   const [newOrderList, setNewOrderList] = useState([])
   const [modalNuevoPedido, setModalNuevoPedido] = useState(false)
+ 
+  useEffect(()=>{
+  const loadSucursal = async ()=>{
+    const value = await AsyncStorage.getItem('numerosucursal')
+    console.log('sucursal guardad es', value);
+    
+    if(value > 0){
+      setSucursal(value)
+      setRestaurante(true)
+    }
+  }
+  loadSucursal()
+},[])
   
   
 
-//    useEffect(()=>{
-//      scanBluetoothDevice()
-//      console.log('escaneando dispositivos');
-//  },[])
+   useEffect(()=>{
+     scanBluetoothDevice()
+     console.log('escaneando dispositivos');
+ },[])
 
 
 
@@ -286,7 +299,8 @@ const App = () => {
       setSucursal(sucursal)
       consultarApi()
       setRestaurante(true)
-      
+
+       
     }else{
 
       Alert.alert(
@@ -296,52 +310,91 @@ const App = () => {
     }
 
   }
-// api pedidos preparando
-  // https://restaurant.ninjastudio.dev/api/pedidosByPreparando/1
-  //api pedidos nuevos
-  // https://restaurant.ninjastudio.dev/api/pedidosBySucursal/
+
+  useEffect(()=>{
+    const saveSucursal= async () =>{
+      if (restaurante){
+        await AsyncStorage.setItem('numerosucursal', sucursal)
+        console.log('sucursal guardada', sucursal)  
+        
+      }
+      
+    }
+
+    
+  saveSucursal() 
+  },[restaurante])
+
   
 
   const consultarApiNuevoPedido = async () => {
     try {
       
-      const reservasApi = await fetch(`https://restaurant.ninjastudio.dev/api/reservasBySucursal/${sucursal}`)
-      const resultado = await reservasApi.json()
-        if(resultado){
-          
-          const reservasFiltrades = resultado.reservas
-          setReservas(reservasFiltrades);
-
-        }
-      
         const respuesta = await fetch(`https://restaurant.ninjastudio.dev/api/pedidosBySucursal/${sucursal}`)
-        if(respuesta){
-          const result = await respuesta.json()
-          const response = await result.pedidos
-
-          console.log(response, 'aqui');
+        const result = await respuesta.json()
+        const response = await result.pedidos
+        
+        if(response){
+          console.log(response.length, 'nuevos pedidos');
           
           setNewOrderList(response)
-          console.log(newOrderList);
-        if(newOrderList.length > 0 || reservas.length > 0){
-          setModalNuevoPedido(true)
-        }
-        
+          console.log('numero de sucursal activa ', sucursal);
+          
+          
       }
+
+      if(newOrderList.length > 0){
+        setModalNuevoPedido(true)
+        console.log(modalNuevoPedido);
+        
+
+      }else{
+        setModalNuevoPedido(false)
+      }
+     
     } catch (error) {
       console.log(error);
       
     }
   }
+
+  const consultarReservas = async () =>{
+    const url= `https://restaurant.ninjastudio.dev/api/reservasBySucursal/${sucursal}`
+    const solicitud= await fetch(url)
+    const response =  await solicitud.json()
+
+    if(response){
+      setReservas(response.reservas)
+      console.log(url);
+      
+
+      if(reservas.length > 0){
+        //setModalNuevoPedido(true)
+        console.log('por aqqui paso')
+        console.log(typeof(modalNuevoPedido));
+        
+        
+      }
+      
+    }
+
+    console.log(response.reservas,'respusta de reservas api');
+    
+    
+  }
   
    useEffect(()=>{
      const interval = setInterval(() => {
-       consultarApiNuevoPedido()
-      
-      
-    }, 5000);
+      if(restaurante){
+
+        consultarApiNuevoPedido()
+        //consultarReservas()
+        
+      }
+        
+    }, 50000);
     return () => clearInterval(interval);
-  },[])
+  },[restaurante])
 
   
   
@@ -349,10 +402,6 @@ const App = () => {
   const consultarApi = async () => {
 
     try {
-
-       
-      
-      
 
       const pedidosApi = `https://restaurant.ninjastudio.dev/api/pedidosByPreparando/${sucursal}`
       const response = await fetch(pedidosApi)
@@ -365,18 +414,6 @@ const App = () => {
         console.log(filtrarpedidos);
         
 
-        
-        
-        
-        
-        
-        
-        // const pedidosfiltrados = filtrarpedidos.filter((pedido) => pedido.estado === 'Pendiente' && pedido.sucursal === sucursal) 
-        // setListaPedidos(pedidosfiltrados)
-        // console.log(pedidosfiltrados);
-        
-        //añadir logica para api reservas
-
       }
       
     } catch (error) {
@@ -388,7 +425,11 @@ const App = () => {
   const handleUpdate = ()=>{
         consultarApi()
         consultarApiNuevoPedido()
+        consultarReservas()
   }
+
+
+
 
   return (
     <>

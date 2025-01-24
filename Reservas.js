@@ -1,37 +1,57 @@
 import React from 'react' 
-import {Text, View, StyleSheet, Pressable} from 'react-native' 
+import {Text, View, StyleSheet, Pressable, Alert} from 'react-native' 
 import GlobalStyles from './GlobalStyles'
+import { printReserva } from './Impresora'
  
  
-const Reservas = ({datos, reservas}) =>  {
-    const {email_cliente, id, nombre_cliente, personas, telefono_cliente} = datos
+const Reservas = ({datos, reservas, setIdReserva, AceptarReserva, RechazarReserva}) =>  {
+    const {email_cliente, id, nombre_cliente, personas, telefono_cliente,fecha_entrada} = datos
+    setIdReserva(id)
+
+    const mostrarAlerta = () =>{
+            Alert.alert(
+                'Aviso!',
+                'Seguro que deseas rechazar?',
+                [
+                    {text: 'Cancelar'},
+                    {text: 'Si, Rechazar', onPress:()=> {
+                        RechazarReserva()
+    
+                    } }
+                ]
+            )
+        }
+
     return (
         <View> 
 <View style={GlobalStyles.container}>
                 <View style= {styles.organizador}>
 
-                    <Pressable style= {styles.contenedor}
-                    onPress={()=> {
-                        console.log('ver detalles')
-                        setModalDetalles(true)
-                    }}> 
+                    <View style= {styles.contenedor}> 
                         <Text style= {styles.label}>Reserva #{id}</Text>
                         <Text style= {styles.label}>Nombre: {nombre_cliente}</Text>
                         <Text style= {styles.label}>Comensales: {personas}</Text>
                         <Text style= {styles.label}>Correo: {email_cliente}</Text>  
                         <Text style= {styles.label}>Telefono: {telefono_cliente}</Text>  
-                        {/* //FIXME: falta fecha y hora */}
-                    </Pressable>
+                        <Text style= {styles.label}>Fecha: {fecha_entrada}</Text>  
+                        
+                    </View>
 
                     <View style={styles.btns}>
                         <Pressable style= {GlobalStyles.botonOk}
-                        onPress={()=> console.log('reserva aceptada')
+                        onPress={()=> {console.log('reserva aceptada')
+                            printReserva(datos)
+                            AceptarReserva()
+
+                        }
                         }>
                             <Text style= {GlobalStyles.txtOk}>Aceptar</Text>
                         </Pressable>
                         
                         <Pressable style= {GlobalStyles.btncancel}
-                        onPress={()=> console.log('reserva rechazada')
+                        onPress={()=> {console.log('reserva rechazada')
+                            mostrarAlerta()
+                        }
                         }>
                             <Text style= {GlobalStyles.txtOk} >Rechazar</Text>
                         </Pressable>

@@ -10,7 +10,7 @@ import PedidoNuevo from './PedidoNuevo'
 
 
 
-const ListaPedidos = ({newOrderList, setModalNuevoPedido ,reservas,setOrderId, AceptarPedido, RechazarPedido}) =>  {
+const ListaPedidos = ({newOrderList, setModalNuevoPedido ,reservas,setOrderId, AceptarPedido, RechazarPedido, setIdReserva,AceptarReserva, RechazarReserva}) =>  {
     
   const [modalNewOrder, setModalNewOrder] = useState(false)
 
@@ -24,7 +24,7 @@ const ListaPedidos = ({newOrderList, setModalNuevoPedido ,reservas,setOrderId, A
             </View>
             <ScrollView>
             <View>
-                <Text style={styles.label}>Nuevo Pedido</Text>
+                {newOrderList.length > 0 && (<Text style={styles.label}>Nuevo Pedido</Text>)}
                 
                 
             </View> 
@@ -49,7 +49,10 @@ const ListaPedidos = ({newOrderList, setModalNuevoPedido ,reservas,setOrderId, A
                             <Reservas 
                             key={datos.id}
                             datos= {datos}
-                            reservas={reservas}/>)
+                            reservas={reservas}
+                            setIdReserva={setIdReserva}
+                            AceptarReserva={AceptarReserva}
+                            RechazarReserva={RechazarReserva}/>)
                           ))}
             </View>
 

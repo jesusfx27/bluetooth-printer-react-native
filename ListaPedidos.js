@@ -14,6 +14,7 @@ const ListaPedidos = ({listaPedidos, reservas, setListaPedidos, setReservas, onU
     
   const [modalNewOrder, setModalNewOrder] = useState(false)
   const [orderId, setOrderId] = useState('')
+  const [idReserva, setIdReserva] = useState('')
 
     const handleUpdate = () =>{
         if(onUpdateList){
@@ -70,6 +71,41 @@ const ListaPedidos = ({listaPedidos, reservas, setListaPedidos, setReservas, onU
             .catch(error => console.error('Error al cambiar el estado:', error));
     };
 
+
+    const AceptarReserva = async () => {
+   
+
+        await fetch(`https://restaurant.ninjastudio.dev/api/reservaPut.php?idReserva=${idReserva}&estado=Aceptada`, {
+            method: 'PUT', //
+            data:{
+                estado: "Preparando"
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+               //aqui llamamos a imprimir
+               handleUpdate()
+            })
+            .catch(error => console.error('Error al cambiar el estado:', error));
+    };
+    const RechazarReserva = async () => {
+   
+
+        await fetch(`https://restaurant.ninjastudio.dev/api/reservaPut.php?idReserva=${idReserva}&estado=Rechazada`, {
+            method: 'PUT', //
+            data:{
+                estado: "Rechazada"
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+               //aqui llamamos a imprimir
+               handleUpdate()
+            })
+            .catch(error => console.error('Error al cambiar el estado:', error));
+    };
+    
+    
     return (
         <>
         
@@ -103,23 +139,16 @@ const ListaPedidos = ({listaPedidos, reservas, setListaPedidos, setReservas, onU
                         setOrderId={setOrderId}
                         AceptarPedido={AceptarPedido}
                         RechazarPedido={RechazarPedido}
+                        setIdReserva={setIdReserva}
+                        AceptarReserva={AceptarReserva}
+                        RechazarReserva={RechazarReserva}
+                        
                         />
                       </Modal>
                     )}
                     </View>
-            <View>
-                <Text style={styles.label}>reservas</Text>
-                {reservas.length == 0 && (<Text style={styles.label}>no hay reservas</Text>)}
-                
-            </View>
-            <View> 
-                {reservas.length > 0 &&(reservas.map(datos => (
-                            <Reservas 
-                            key={datos.id}
-                            datos= {datos}
-                            reservas={reservas}/>)
-                          ))}
-            </View>
+            
+            
 
             <View>
                 {modalNewOrder && (
@@ -130,7 +159,8 @@ const ListaPedidos = ({listaPedidos, reservas, setListaPedidos, setReservas, onU
                         setModalNewOrder={setModalNewOrder}
                         listaPedidos={listaPedidos}
                         setOrderId={setOrderId}
-                        AceptarPedido={AceptarPedido}/>
+                        AceptarPedido={AceptarPedido}
+                        />
                     </Modal>
                 )}
             </View>
