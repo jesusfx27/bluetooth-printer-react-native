@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, use } from 'react';
 import {
   ActivityIndicator,
   DeviceEventEmitter,
@@ -26,6 +26,7 @@ import GlobalStyles from './GlobalStyles';
 import ListaPedidos from './ListaPedidos';
 import Pedido from './Pedido';
 import NuevoPedidoLista from './NuevoPedidoLista';
+import Sound from 'react-native-sound';
 
 const App = () => {
   const [pairedDevices, setPairedDevices] = useState([]);
@@ -42,6 +43,50 @@ const App = () => {
   const [listaPedidos, setListaPedidos] = useState([])
   const [newOrderList, setNewOrderList] = useState([])
   const [modalNuevoPedido, setModalNuevoPedido] = useState(false)
+  const [sound, setSound] = useState(null);
+  const [notify, setNotify] = useState(false)
+
+  // Cargar el sonido
+  const loadSound = () => {
+    const alertSound = new Sound('alert.mp3', Sound.MAIN_BUNDLE, (error) => {
+      if (error) {
+        console.error('Error al cargar el sonido:', error);
+        return;
+      }
+      alertSound.setNumberOfLoops(-1); // -1 para bucle infinito
+      setSound(alertSound);
+    });
+  };
+
+  useEffect(()=>{
+    loadSound()
+  },[])
+
+
+  // Reproducir el sonido
+  const playSound = () => {
+    console.log('reproduciendo 62');
+    
+    if (sound) {
+      setNotify(false)
+      sound.play((success) => {
+        if (!success) {
+          console.error('Error al reproducir el sonido');
+        }
+      });
+    } else {
+      console.log('El sonido no está cargado');
+    }
+  };
+
+  // Detener el sonido
+  const StopSound = () => {
+    if (sound) {
+      sound.stop(() => {
+        console.log('Sonido detenido');
+      });
+    }
+  };
  
   useEffect(()=>{
   const loadSucursal = async ()=>{
@@ -315,7 +360,6 @@ const App = () => {
     const saveSucursal= async () =>{
       if (restaurante){
         await AsyncStorage.setItem('numerosucursal', sucursal)
-        console.log('sucursal guardada', sucursal)  
         
       }
       
@@ -337,19 +381,17 @@ const App = () => {
         if(response){
           console.log(response.length, 'nuevos pedidos');
           
+          
           setNewOrderList(response)
-          console.log('numero de sucursal activa ', sucursal);
+          if(response.length > 0){
+            setNotify(true)
+          }else{
+            setNotify(false)
+          }
           
           
       }
 
-      if(newOrderList.length > 0){
-       // setModalNuevoPedido(true)
-        console.log(modalNuevoPedido);
-        
-
-      }
-     
     } catch (error) {
       console.log(error);
       
@@ -363,23 +405,24 @@ const App = () => {
 
     if(response){
       setReservas(response.reservas)
-      console.log(url);
-      
-
-      if(reservas.length > 0){
-        //setModalNuevoPedido(true)
-        console.log('por aqqui paso')
-        console.log(typeof(modalNuevoPedido));
-        
-        
+      console.log(response.reservas.length , 'reservas');
+      if(response.reservas.length > 0){
+        setNotify(true)
+      }else{
+        setNotify(false)
       }
       
+      
+      
     }
-
-    console.log(response.reservas,'respusta de reservas api');
-    
-    
   }
+  useEffect(()=>{
+    if(notify){
+      playSound()
+    }
+  },[notify])
+  
+  
   
    useEffect(()=>{
      const interval = setInterval(() => {
@@ -391,7 +434,7 @@ const App = () => {
         
       }
         
-    }, 50000);
+    }, 20000);
     return () => clearInterval(interval);
   },[restaurante])
 
@@ -410,7 +453,6 @@ const App = () => {
         const filtrarpedidos = (result.pedidos)
         
         setListaPedidos(filtrarpedidos)
-        console.log(filtrarpedidos);
         
 
       }
@@ -469,6 +511,8 @@ const App = () => {
               newOrderList={newOrderList}
               setModalNuevoPedido= {setModalNuevoPedido}
               modalNuevoPedido={modalNuevoPedido}
+              StopSound={StopSound}
+              
               
               />
             </Modal>

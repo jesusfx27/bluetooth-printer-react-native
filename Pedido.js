@@ -73,6 +73,7 @@ const Pedido = ({datos, onUpdateList, setUpdate}) =>  {
                         onPress={()=> {
                             console.log('pedido enviado')
                             EnviandoPedido(idPedido)
+
                             
                             
                             

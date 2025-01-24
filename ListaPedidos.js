@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {Text, View, StyleSheet, ScrollView, Modal} from 'react-native'
 import GlobalStyles from './GlobalStyles'
 import Pedido from './Pedido'
@@ -11,9 +11,11 @@ import PedidoNuevo from './PedidoNuevo'
 
 
 
-const ListaPedidos = ({listaPedidos, reservas, setListaPedidos, setReservas, onUpdateList, newOrderList, modalNuevoPedido, setModalNuevoPedido}) =>  {
+const ListaPedidos = ({listaPedidos, reservas, setListaPedidos, setReservas, onUpdateList, newOrderList, modalNuevoPedido, setModalNuevoPedido,StopSound}) =>  {
 
   const [modalNewOrder, setModalNewOrder] = useState(false)
+
+  
 
     const handleUpdate = () =>{
         if(onUpdateList){
@@ -120,6 +122,7 @@ const ListaPedidos = ({listaPedidos, reservas, setListaPedidos, setReservas, onU
                             datos= {datos}
                             AceptarPedido={AceptarPedido}
                             RechazarPedido={RechazarPedido}
+                            StopSound={StopSound}
                             />)
                           ))}
             <View>
@@ -134,6 +137,7 @@ const ListaPedidos = ({listaPedidos, reservas, setListaPedidos, setReservas, onU
                             datos= {datos}
                             onUpdateList={handleUpdate}
                             EnviandoPedido={EnviandoPedido}
+                            StopSound={StopSound}
                             />)
                           ))}
             </View>
@@ -149,7 +153,8 @@ const ListaPedidos = ({listaPedidos, reservas, setListaPedidos, setReservas, onU
                             datos= {datos}
                             reservas={reservas}
                             AceptarReserva={AceptarReserva}
-                            RechazarReserva={RechazarReserva}/>)
+                            RechazarReserva={RechazarReserva}
+                            StopSound={StopSound}/>)
                           ))}
             </View>
 

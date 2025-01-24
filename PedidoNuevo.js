@@ -8,7 +8,7 @@ import DetallesNuevoPedido from './DetallesNuevoPedido'
  
  
  
-const PedidoNuevo = ({datos, onUpdateList, setUpdate, AceptarPedido, RechazarPedido}) =>  {
+const PedidoNuevo = ({datos, onUpdateList, setUpdate, AceptarPedido, RechazarPedido,StopSound}) =>  {
 
     
     const [modalDetalles, setModalDetalles] = useState(false)
@@ -37,12 +37,6 @@ const PedidoNuevo = ({datos, onUpdateList, setUpdate, AceptarPedido, RechazarPed
     }
 
 
-
-    
-    
-    
-
-
     return (
         <>
         <ScrollView>
@@ -64,6 +58,7 @@ const PedidoNuevo = ({datos, onUpdateList, setUpdate, AceptarPedido, RechazarPed
                         <Pressable style= {GlobalStyles.botonOk}
                         onPress={()=> {
                             console.log('pedido impreso')
+                            StopSound()
                             PrintNewOrder(datos)
                             AceptarPedido(idPedido)
                             
@@ -75,6 +70,7 @@ const PedidoNuevo = ({datos, onUpdateList, setUpdate, AceptarPedido, RechazarPed
                         <Pressable style= {GlobalStyles.btncancel}
                         onPress={()=> {
                             console.log('pedido rechazado')
+                            StopSound()
                             mostrarAlerta()
                         }}>
                             <Text style= {GlobalStyles.txtOk} >Rechazar</Text>

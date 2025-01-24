@@ -9,7 +9,6 @@ const DetallesPedido = ({datos, setModalDetalles}) =>  {
 
 
     const listaProductos= JSON.parse(datos.productos)
-    console.log(listaProductos);
 
    
     
@@ -17,9 +16,11 @@ const DetallesPedido = ({datos, setModalDetalles}) =>  {
     
     return (
         <>
-            <View style={GlobalStyles.top}>
-                <Text style={GlobalStyles.header}>detalles del pedido</Text>
-            </View>
+            <Pressable onPress={()=> setModalDetalles(false)}>
+                <View style={GlobalStyles.top}>
+                    <Text style={GlobalStyles.header}>detalles del pedido</Text>
+                </View>
+            </Pressable>
             
                 <View style={styles.contenedor}>
                     <Text style={styles.label}>Pedido #{idPedido}</Text>

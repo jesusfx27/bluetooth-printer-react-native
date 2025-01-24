@@ -9,7 +9,6 @@ const DetallesPedido = ({datos, setModalDetalles, RechazarPedido, AceptarPedido}
     
 
     const listaProductos= JSON.parse(datos.productos)
-    console.log(listaProductos);
 
     const mostrarAlerta = () =>{
         Alert.alert(
@@ -29,10 +28,11 @@ const DetallesPedido = ({datos, setModalDetalles, RechazarPedido, AceptarPedido}
     
     return (
         <>
-            <View style={GlobalStyles.top}>
-                <Text style={GlobalStyles.header}>detalles del pedido</Text>
-            </View>
-            
+            <Pressable onPress={()=> setModalDetalles(false)}>
+                <View style={GlobalStyles.top}>
+                    <Text style={GlobalStyles.header}>detalles del pedido</Text>
+                </View>
+            </Pressable>
                 <View style={styles.contenedor}>
                     <Text style={styles.label}>Pedido #{idPedido}</Text>
                     <Text style={styles.label}>{nombre}</Text>

@@ -7,7 +7,6 @@ export const PrintNewOrder = async (datos) => {
 
 
     const listaProductos= JSON.parse(datos.productos)
-    console.log(listaProductos);
 
     let respuesta = ''
     const listaSeteada = listaProductos.map(producto => {
@@ -17,7 +16,7 @@ export const PrintNewOrder = async (datos) => {
     }
     )
 
-    console.log("lista seteada ", listaSeteada,);
+    
     
     
 

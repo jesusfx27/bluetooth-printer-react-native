@@ -13,7 +13,6 @@ const NuevoPedidoDetalles = ({setModalNewOrder, listaPedidos, AceptarPedido}) =>
     
 
     const listaProductos= JSON.parse(newOrder.productos)
-    console.log(listaProductos);
 
 
     return (

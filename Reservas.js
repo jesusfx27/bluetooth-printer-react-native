@@ -4,7 +4,7 @@ import GlobalStyles from './GlobalStyles'
 import { printReserva } from './Impresora'
  
  
-const Reservas = ({datos, reservas, AceptarReserva, RechazarReserva}) =>  {
+const Reservas = ({datos, reservas, AceptarReserva, RechazarReserva, StopSound}) =>  {
     const {email_cliente, id, nombre_cliente, personas, telefono_cliente,fecha_entrada} = datos
     
 
@@ -42,6 +42,7 @@ const Reservas = ({datos, reservas, AceptarReserva, RechazarReserva}) =>  {
                         onPress={()=> {console.log('reserva aceptada')
                             printReserva(datos)
                             AceptarReserva(id)
+                            StopSound()
 
                         }
                         }>
@@ -50,6 +51,7 @@ const Reservas = ({datos, reservas, AceptarReserva, RechazarReserva}) =>  {
                         
                         <Pressable style= {GlobalStyles.btncancel}
                         onPress={()=> {console.log('reserva rechazada')
+                            StopSound()
                             mostrarAlerta()
                         }
                         }>
