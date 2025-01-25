@@ -4,7 +4,7 @@ import GlobalStyles from './GlobalStyles'
 import { PrintNewOrder } from './Impresora'
  
  
-const DetallesPedido = ({datos, setModalDetalles, RechazarPedido, AceptarPedido}) =>  {
+const DetallesPedido = ({datos, setModalDetalles, RechazarPedido, AceptarPedido,StopSound}) =>  {
     const {idPedido, nombre, nota, total} = datos
     
 
@@ -66,6 +66,8 @@ const DetallesPedido = ({datos, setModalDetalles, RechazarPedido, AceptarPedido}
                 onPress={()=> {
                     PrintNewOrder(datos)
                     AceptarPedido(idPedido)
+                    StopSound()
+                    
                 }}>
                     <Text style= {GlobalStyles.txtOk}>Aceptar</Text>
                 </Pressable>
@@ -73,6 +75,7 @@ const DetallesPedido = ({datos, setModalDetalles, RechazarPedido, AceptarPedido}
                 <Pressable style={[GlobalStyles.btncancel, styles.btnSize]}
                 onPress= {()=>{ 
                     console.log('pedido recahzada')
+                    StopSound()
                     mostrarAlerta()
                     }
                     

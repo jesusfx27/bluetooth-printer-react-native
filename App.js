@@ -434,7 +434,7 @@ const App = () => {
         
       }
         
-    }, 20000);
+    }, 50000);
     return () => clearInterval(interval);
   },[restaurante])
 

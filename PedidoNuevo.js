@@ -87,6 +87,7 @@ const PedidoNuevo = ({datos, onUpdateList, setUpdate, AceptarPedido, RechazarPed
                     setModalDetalles={setModalDetalles}
                     RechazarPedido={RechazarPedido}
                     AceptarPedido={AceptarPedido}
+                    StopSound={StopSound}
                     
                     />
                 </Modal>

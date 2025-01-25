@@ -64,6 +64,7 @@ const Pedido = ({datos, onUpdateList, setUpdate}) =>  {
                         onPress={()=> {
                             console.log('pedido impreso')
                             PrintNewOrder(datos)
+                            
                         }
                         }>
                             <Text style= {GlobalStyles.txtOk}>Imprimir</Text>
@@ -73,6 +74,7 @@ const Pedido = ({datos, onUpdateList, setUpdate}) =>  {
                         onPress={()=> {
                             console.log('pedido enviado')
                             EnviandoPedido(idPedido)
+                            
 
                             
                             

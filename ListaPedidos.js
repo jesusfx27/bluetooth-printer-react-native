@@ -127,7 +127,7 @@ const ListaPedidos = ({listaPedidos, reservas, setListaPedidos, setReservas, onU
                           ))}
             <View>
                 {listaPedidos.length > 0 &&(<Text style={styles.label}>en Preparacion</Text> )}
-                {/* {listaPedidos.length == 0 || reservas.length == 0 || newOrderList.length == 0 &&(<Text style={styles.label}>no hay pedidos aun</Text>)} */}
+                {listaPedidos.length == 0 && reservas.length == 0 && newOrderList.length == 0 &&(<Text style={styles.label}>no hay pedidos aun</Text>)}
 
             </View>
             <View>
@@ -137,7 +137,6 @@ const ListaPedidos = ({listaPedidos, reservas, setListaPedidos, setReservas, onU
                             datos= {datos}
                             onUpdateList={handleUpdate}
                             EnviandoPedido={EnviandoPedido}
-                            StopSound={StopSound}
                             />)
                           ))}
             </View>
